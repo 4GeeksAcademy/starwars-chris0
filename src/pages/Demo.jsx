@@ -1,43 +1,51 @@
-// Import necessary components from react-router-dom and other parts of the application.
 import { Link } from "react-router-dom";
-import useGlobalReducer from "../hooks/useGlobalReducer";  // Custom hook for accessing the global state.
+import useGlobalReducer from "../hooks/useGlobalReducer";
 
 export const Demo = () => {
-  // Access the global state and dispatch function using the useGlobalReducer hook.
-  const { store, dispatch } = useGlobalReducer()
+  const { store, dispatch } = useGlobalReducer();
 
   return (
-    <div className="container">
+    <div className="container mt-4">
+      <h2 className="mb-4">Todo List</h2>
       <ul className="list-group">
-        {/* Map over the 'todos' array from the store and render each item as a list element */}
-        {store && store.todos?.map((item) => {
-          return (
+        {store && store.todos?.length > 0 ? (
+          store.todos.map((item) => (
             <li
-              key={item.id}  // React key for list items.
-              className="list-group-item d-flex justify-content-between"
-              style={{ background: item.background }}> 
-              
-              {/* Link to the detail page of this todo. */}
-              <Link to={"/single/" + item.id}>Link to: {item.title} </Link>
-              
-              <p>Open file ./store.js to see the global store that contains and updates the list of colors</p>
-              
-              <button className="btn btn-success" 
-                onClick={() => dispatch({
-                  type: "add_task", 
-                  payload: { id: item.id, color: '#ffa500' }
-                })}>
+              key={item.id}
+              className="list-group-item d-flex justify-content-between align-items-center"
+              style={{ background: item.background || "#fff" }}
+            >
+              <div>
+                <Link to={`/single/${item.id}`} className="fw-bold text-decoration-none">
+                  {item.title}
+                </Link>
+                <p className="mb-0 small text-muted">
+                  Open <code>./store.js</code> to see the global store that manages colors.
+                </p>
+              </div>
+              <button
+                className="btn btn-success"
+                onClick={() =>
+                  dispatch({
+                    type: "update_color",
+                    payload: { id: item.id, color: "#ffa500" },
+                  })
+                }
+              >
                 Change Color
               </button>
             </li>
-          );
-        })}
+          ))
+        ) : (
+          <p className="text-muted">No todos available.</p>
+        )}
       </ul>
-      <br />
 
-      <Link to="/">
-        <button className="btn btn-primary">Back home</button>
-      </Link>
+      <div className="mt-4">
+        <Link to="/">
+          <button className="btn btn-primary">Back home</button>
+        </Link>
+      </div>
     </div>
   );
 };
